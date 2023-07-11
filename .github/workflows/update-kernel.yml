@@ -39,6 +39,6 @@ jobs:
         run: |
           git config user.name "XXTXTOP"
           git config user.email "xxtxtop@gmail.com"
-          git add *.txt  # 使用通配符添加所有以 .txt 结尾的文件
+          git add *.txt  # 使用通配符添加所有以 .txt 结尾的文件1
           git commit -m "Create file with kernel version"
           git push origin main
