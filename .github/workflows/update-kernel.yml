@@ -25,7 +25,7 @@ jobs:
           echo "Latest Linux Kernel version: $latest_tag"
           echo "echo \"$latest_tag\" > temp_file.txt" >> create_file.sh
           chmod +x create_file.sh
-          ./create_file.sh  # 执行脚本以创建临时文件
+          ./create_file.sh  # 执行脚本以创建临时文件1
 
       - name: Rename File
         run: |
