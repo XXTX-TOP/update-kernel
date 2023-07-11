@@ -3,7 +3,7 @@ import time
 
 while True:
 
-    subprocess.call(['/home/Deepin/Desktop/update-kernel/script.sh'])
+    subprocess.call(['/home/xxx/Desktop/update-kernel/script.sh'])
 
 
     time.sleep(30)
