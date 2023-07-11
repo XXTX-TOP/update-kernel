@@ -27,7 +27,6 @@ jobs:
 
       - name: Write Version to Repository
         id: write-version
-        if: steps.update-kernel.outcome == 'success'
         run: |
           version=${{ env.KERNEL_VERSION }}
           if [ -f kernel_version.txt ]; then
@@ -36,10 +35,10 @@ jobs:
           else
             echo "$version" > kernel_version.txt  # 如果文件不存在，则创建新文件并写入版本号
           fi
+        if: steps.update-kernel.outcome == 'success'
 
       - name: Write Error Version to Repository
         id: write-error-version
-        if: steps.update-kernel.outcome == 'failure'
         run: |
           version="000"
           if [ -f kernel_version.txt ]; then
@@ -48,3 +47,4 @@ jobs:
           else
             echo "$version" > kernel_version.txt  # 如果文件不存在，则创建新文件并写入错误版本号
           fi
+        if: steps.update-kernel.outcome == 'failure'
