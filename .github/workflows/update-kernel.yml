@@ -6,31 +6,36 @@ on:
       - main
 
 
-jobs:
-  update-kernel:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Update Kernel
-        run: |
-          git fetch --all
-          latest_tag=$(git describe --abbrev=0 --tags)
-          echo "Latest Linux Kernel version: $latest_tag"
-
-      - name: Write Version to Repository
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.TOKEN }}
-          script: |
-            const version = "${latest_tag}";
-            const repo = context.repo;
-            github.repos.createOrUpdateFileContents({
-              ...repo,
-              path: 'kernel_version.txt',
-              message: 'Update kernel version',
-              content: Buffer.from(version).toString('base64'),
-              sha: context.payload.repository.contents_url
-            });
+      jobs:
+        update-kernel:
+          runs-on: ubuntu-latest
+      
+          steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v2
+      
+            - name: Install curl and jq
+              run: |
+                sudo apt-get update
+                sudo apt-get install -y curl jq
+      
+            - name: Update Kernel
+              run: |
+                latest_tag=$(curl -sS https://www.kernel.org/releases.json | jq -r '.latest_stable.version')
+                echo "Latest Linux Kernel version: $latest_tag"
+      
+            - name: Write Version to Repository
+              uses: actions/github-script@v4
+              with:
+                github-token: ${{ secrets.TOKEN }}
+                script: |
+                  const version = "${latest_tag}";
+                  const repo = context.repo;
+                  const sha = execSync('git rev-parse HEAD:path/to/kernel_version.txt').toString().trim();
+                  github.repos.createOrUpdateFileContents({
+                    ...repo,
+                    path: 'kernel_version.txt',
+                    message: 'Update kernel version',
+                    content: Buffer.from(version).toString('base64'),
+                    sha: sha
+                  });
