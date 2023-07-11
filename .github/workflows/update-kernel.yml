@@ -23,15 +23,20 @@ jobs:
         run: |
           latest_tag=$(curl -sS https://www.kernel.org/releases.json | jq -r '.latest_stable.version')
           echo "Latest Linux Kernel version: $latest_tag"
-          echo "echo \"$latest_tag\" > \"$latest_tag.txt\"" >> create_file.sh
+          echo "echo \"$latest_tag\" > temp_file.txt" >> create_file.sh
           chmod +x create_file.sh
-          ./create_file.sh  # 执行脚本以创建以版本号命名的文本文件
+          ./create_file.sh  # 执行脚本以创建临时文件
+
+      - name: Rename File
+        run: |
+          latest_tag=$(cat temp_file.txt)
+          mv temp_file.txt "$latest_tag.txt"  # 将临时文件重命名为以版本号命名的文件
 
       - name: Commit and Push Changes
         if: steps.update-kernel.outcome == 'success'
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config user.name "XXTXTOP"
+          git config user.email "xxtxtop@gmail.com"
           git add "$latest_tag.txt"
           git commit -m "Create file with kernel version"
           git push origin main
