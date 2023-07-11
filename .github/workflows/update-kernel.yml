@@ -4,26 +4,24 @@ on:
   push:
     branches:
       - main
-
-
-      jobs:
+jobs:
         update-kernel:
           runs-on: ubuntu-latest
-      
+
           steps:
             - name: Checkout Repository
               uses: actions/checkout@v2
-      
+
             - name: Install curl and jq
               run: |
                 sudo apt-get update
                 sudo apt-get install -y curl jq
-      
+
             - name: Update Kernel
               run: |
                 latest_tag=$(curl -sS https://www.kernel.org/releases.json | jq -r '.latest_stable.version')
                 echo "Latest Linux Kernel version: $latest_tag"
-      
+
             - name: Write Version to Repository
               uses: actions/github-script@v4
               with:
