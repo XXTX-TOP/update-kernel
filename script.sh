@@ -12,10 +12,11 @@ git add .
 commit_message=$(tail -n 1 time.txt)
 
 # 提交代码并添加提交消息
-git commit -m "$commit_message 修改"
+echo "$commit_message 修改" | git commit -F -
 
 # 推送提交到远程仓库
 git pull origin main
+echo "$commit_message 修改" | git commit -F -
 git push origin main
 # 检查git命令的返回状态
 if [ $? -eq 0 ]; then
