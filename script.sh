@@ -11,6 +11,9 @@ git add .
 # 从time.txt文件中获取最后一行
 commit_message=$(tail -n 1 time.txt)
 
+# 设置GIT_EDITOR环境变量为"true"，以避免打开编辑器
+export GIT_EDITOR=true
+
 # 提交代码并添加提交消息
 echo "$commit_message" | git commit -F - --no-edit
 
