@@ -4,36 +4,38 @@ on:
   push:
     branches:
       - main
+
 jobs:
-        update-kernel:
-          runs-on: ubuntu-latest
+  update-kernel:
+    runs-on: ubuntu-latest
 
-          steps:
-            - name: Checkout Repository
-              uses: actions/checkout@v2
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-            - name: Install curl and jq
-              run: |
-                sudo apt-get update
-                sudo apt-get install -y curl jq
+      - name: Install curl and jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl jq
 
-            - name: Update Kernel
-              run: |
-                latest_tag=$(curl -sS https://www.kernel.org/releases.json | jq -r '.latest_stable.version')
-                echo "Latest Linux Kernel version: $latest_tag"
+      - name: Update Kernel
+        run: |
+          latest_tag=$(curl -sS https://www.kernel.org/releases.json | jq -r '.latest_stable.version')
+          echo "Latest Linux Kernel version: $latest_tag"
+          echo "::set-output name=kernel_version::${latest_tag}"  # 将版本号输出到工作流程的输出中
 
-            - name: Write Version to Repository
-              uses: actions/github-script@v4
-              with:
-                github-token: ${{ secrets.TOKEN }}
-                script: |
-                  const version = "${latest_tag}";
-                  const repo = context.repo;
-                  const sha = execSync('git rev-parse HEAD:path/to/kernel_version.txt').toString().trim();
-                  github.repos.createOrUpdateFileContents({
-                    ...repo,
-                    path: 'kernel_version.txt',
-                    message: 'Update kernel version',
-                    content: Buffer.from(version).toString('base64'),
-                    sha: sha
-                  });
+      - name: Write Version to Repository
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.TOKEN }}
+          script: |
+            const version = "${{ steps.update-kernel.outputs.kernel_version }}";  # 从工作流程输出中获取版本号
+            const repo = context.repo;
+            const sha = context.sha;
+            github.repos.createOrUpdateFileContents({
+              ...repo,
+              path: 'kernel_version.txt',
+              message: 'Update kernel version',
+              content: Buffer.from(version).toString('base64'),
+              sha: sha
+            });
