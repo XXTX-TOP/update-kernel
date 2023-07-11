@@ -12,7 +12,7 @@ git add .
 commit_message=$(tail -n 1 time.txt)
 
 # 提交代码并添加提交消息
-git commit -m "$commit_message"
+git commit -m "$commit_message 修改"
 
 # 推送提交到远程仓库
 git pull origin main
