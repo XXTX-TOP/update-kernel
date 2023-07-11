@@ -15,6 +15,7 @@ commit_message=$(tail -n 1 time.txt)
 git commit -m "$commit_message"
 
 # 推送提交到远程仓库
+git pull origin main
 git push origin main
 # 检查git命令的返回状态
 if [ $? -eq 0 ]; then
